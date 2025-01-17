@@ -1,0 +1,87 @@
+name: vs-data
+
+on:
+  workflow_dispatch:
+  schedule:
+    # https://crontab.guru/#*/15_*_*_*_*
+    - cron: '*/15 * * * *'
+
+jobs:
+  build:
+    name: Build within container
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        dist:
+          - {
+              os: 'ubuntu',
+              symbol: 'noble',
+              playwright_version: '1.49.1'
+            }
+    container:
+      image: mcr.microsoft.com/playwright:v${{ matrix.dist.playwright_version }}-${{ matrix.dist.symbol }}
+      options: -v ${{ github.workspace }}:/worker --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+        with:
+          repository: rose-org/vpngate-scraper
+          token: ${{ secrets.GH_PAT }}
+          fetch-depth: 0
+          ref: main
+          path: '.'
+
+      - name: Install Python
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends python3 python3-pip python3-venv curl
+
+      - name: Install dependencies
+        run: |
+          cd /worker
+          python3 -m venv .venv
+          . .venv/bin/activate
+          python3 -m pip install --no-cache-dir playwright==${{ matrix.dist.playwright_version }}
+          deactivate
+
+      - name: Build vpn data
+        shell: bash
+        run: |
+          cd /worker
+          . .venv/bin/activate
+          export HOME=/root
+          python3 main.py
+
+      - name: Prepare publish
+        shell: bash
+        run: |
+          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          mkdir /worker/build
+          cp /worker/data.json /worker/build
+          cp /worker/raw_data.json /worker/build
+
+      - name: Download raw csv
+        shell: bash
+        run: |
+          curl -sL --connect-timeout 10 --retry 5 --retry-delay 5 --retry-max-time 25 -o /worker/build/raw_data.csv "https://www.vpngate.net/api/iphone/"
+
+      - name: Push to "release" branch
+        run: |
+          cd /worker/build
+          git init
+          git config user.name "Epsilon"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          git checkout -b release
+          git add .
+          git commit -m "${{ env.TAG_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ github.token }}@github.com/${{ github.repository }}"
+          git push -f origin release
+
+      - name: Remove old Workflow runs records
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 3
+          keep_minimum_runs: 3
