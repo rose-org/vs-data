@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: Build within container
+    name: Generate vs-data
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -61,11 +61,6 @@ jobs:
           cp /worker/data.json /worker/build
           cp /worker/raw_data.json /worker/build
 
-      - name: Download raw csv
-        shell: bash
-        run: |
-          curl -sL --connect-timeout 10 --retry 5 --retry-delay 5 --retry-max-time 25 -o /worker/build/raw_data.csv "https://www.vpngate.net/api/iphone/"
-
       - name: Push to "release" branch
         run: |
           cd /worker/build
@@ -78,6 +73,33 @@ jobs:
           git remote add origin "https://${{ github.actor }}:${{ github.token }}@github.com/${{ github.repository }}"
           git push -f origin release
 
+  mirror:
+    name: Get raw csv
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download raw csv
+        shell: bash
+        run: |
+          echo "TAG_NAME=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+          mkdir -p ${{ github.workspace }}/upload
+          curl -sL --connect-timeout 10 --retry 5 --retry-delay 5 --retry-max-time 25 -o ${{ github.workspace }}/upload/raw_data.csv "https://www.vpngate.net/api/iphone/"
+
+      - name: Push to "mirror" branch
+        run: |
+          cd ${{ github.workspace }}/upload
+          git init
+          git config user.name "Epsilon"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          git checkout -b mirror
+          git add .
+          git commit -m "${{ env.TAG_NAME }}"
+          git remote add origin "https://${{ github.actor }}:${{ github.token }}@github.com/${{ github.repository }}"
+          git push -f origin mirror
+
+  cleanup:
+    name: Cleanup
+    runs-on: ubuntu-latest
+    steps:
       - name: Remove old Workflow runs records
         uses: Mattraks/delete-workflow-runs@v2
         with:
