@@ -4,18 +4,18 @@
 
 #### URL1
 
-- [data.json](https://raw.githubusercontent.com/rose-org/vs-data/release/data.json)
-- [raw_data.json](https://raw.githubusercontent.com/rose-org/vs-data/release/raw_data.json)
-- [raw_data.csv](https://raw.githubusercontent.com/rose-org/vs-data/mirror/raw_csv.json)
+- [data.json.zst](https://raw.githubusercontent.com/rose-org/vs-data/release/data.json.zst)
+- [raw_data.json.zst](https://raw.githubusercontent.com/rose-org/vs-data/release/raw_data.json.zst)
+- [raw_data.csv.zst](https://raw.githubusercontent.com/rose-org/vs-data/mirror/raw_data.csv.zst)
 
 #### URL2
 
-- [data.json](https://cdn.jsdelivr.net/gh/rose-org/vs-data@release/data.json)
-- [raw_data.json](https://cdn.jsdelivr.net/gh/rose-org/vs-data@release/raw_data.json)
-- [raw_data.csv](https://cdn.jsdelivr.net/gh/rose-org/vs-data@mirror/raw_data.csv)
+- [data.json.zst](https://cdn.jsdelivr.net/gh/rose-org/vs-data@release/data.json.zst)
+- [raw_data.json.zst](https://cdn.jsdelivr.net/gh/rose-org/vs-data@release/raw_data.json.zst)
+- [raw_data.csv.zst](https://cdn.jsdelivr.net/gh/rose-org/vs-data@mirror/raw_data.csv.zst)
 
 #### URL3
 
-- [data.json](https://testingcf.jsdelivr.net/gh/rose-org/vs-data@release/data.json)
-- [raw_data.json](https://testingcf.jsdelivr.net/gh/rose-org/vs-data@release/raw_data.json)
-- [raw_data.csv](https://testingcf.jsdelivr.net/gh/rose-org/vs-data@mirror/raw_data.csv)
+- [data.json.zst](https://testingcf.jsdelivr.net/gh/rose-org/vs-data@release/data.json.zst)
+- [raw_data.json.zst](https://testingcf.jsdelivr.net/gh/rose-org/vs-data@release/raw_data.json.zst)
+- [raw_data.csv.zst](https://testingcf.jsdelivr.net/gh/rose-org/vs-data@mirror/raw_data.csv.zst)
