@@ -17,10 +17,11 @@ jobs:
           - {
               os: 'ubuntu',
               symbol: 'noble',
-              playwright_version: '1.49.1'
+              playwright_ver: '1.51.1',
+              playwright_python_ver: '1.51.0'
             }
     container:
-      image: mcr.microsoft.com/playwright:v${{ matrix.dist.playwright_version }}-${{ matrix.dist.symbol }}
+      image: mcr.microsoft.com/playwright:v${{ matrix.dist.playwright_ver }}-${{ matrix.dist.symbol }}
       options: -v ${{ github.workspace }}:/worker --cap-add SYS_ADMIN --device /dev/fuse --security-opt apparmor:unconfined
     steps:
       - name: Checkout Source Code
@@ -42,7 +43,7 @@ jobs:
           cd /worker
           python3 -m venv .venv
           . .venv/bin/activate
-          python3 -m pip install --no-cache-dir playwright==${{ matrix.dist.playwright_version }}
+          python3 -m pip install --no-cache-dir playwright==${{ matrix.dist.playwright_python_ver }}
           deactivate
 
       - name: Build vpn data
