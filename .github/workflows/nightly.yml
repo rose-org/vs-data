@@ -12,13 +12,15 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      # https://playwright.dev/python/docs/docker
+      # https://github.com/microsoft/playwright-python
       matrix:
         dist:
           - {
               os: 'ubuntu',
               symbol: 'noble',
-              playwright_ver: '1.51.1',
-              playwright_python_ver: '1.51.0'
+              playwright_ver: '1.52.0',
+              playwright_python_ver: '1.52.0'
             }
     container:
       image: mcr.microsoft.com/playwright:v${{ matrix.dist.playwright_ver }}-${{ matrix.dist.symbol }}
