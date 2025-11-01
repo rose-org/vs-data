@@ -19,8 +19,8 @@ jobs:
           - {
               os: 'ubuntu',
               symbol: 'noble',
-              playwright_ver: '1.52.0',
-              playwright_python_ver: '1.52.0'
+              playwright_ver: '1.55.0',
+              playwright_python_ver: '1.55.0'
             }
     container:
       image: mcr.microsoft.com/playwright:v${{ matrix.dist.playwright_ver }}-${{ matrix.dist.symbol }}
